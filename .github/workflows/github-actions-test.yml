@@ -2,7 +2,7 @@ name: GitHub Actions Test
 
 on:
   schedule:
-    - cron: "27 * * * *"
+    - cron: "31 * * * *"
   workflow_dispatch:
 
 jobs:
