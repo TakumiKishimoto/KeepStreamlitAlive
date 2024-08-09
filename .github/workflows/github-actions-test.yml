@@ -1,31 +1,22 @@
-# name:ワークフローの名前　GitHub では、ワークフローの名前がリポジトリの [アクション] タブに表示される
 name: GitHub Actions Test
 
-# on:ワークフローを自動的にトリガーするに、on を使用してワークフローを実行する原因となるイベントを定義する
-# on.schedule:ワークフローの時間スケジュールを定義可能　ワークフローを特定の UTC 時刻に実行するように、スケジュールする
-# workflow_dispatch:ワークフローを手動でトリガーすることが可能
 on:
   schedule:
     - cron: "0 9 * * *"
   workflow_dispatch:
 
-# jobs:ワークフローを実行する一つ以上の構成のこと
-# runs-on:各ジョブの実行環境を指定する
-# steps:アクションを実行するための一連のステップ
-# uses:ジョブで実行されるアクション（繰り返し使用するコード）を選択する
-# run:コマンドを実行する
 jobs:
-  test: # ジョブ名
+  test:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout # ステップ名
-        uses: actions/checkout@v3 # checkoutリポジトリを繰り返し実行
-	
-      - name: Commit # ステップ名
+      - name: Checkout
+        uses: actions/checkout@v3
+        
+      - name: Commit
         run: |
-          git config --global user.email ${{ secrets.USER_EMAIL }}
-          git config --global user.name ${{ secrets.USER_NAME }}
+          git config --global user.email "${{ secrets.USER_EMAIL }}"
+          git config --global user.name "${{ secrets.USER_NAME }}"
           date >> README.md
           git add README.md
           git commit -m 'add time'
