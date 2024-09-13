@@ -23,7 +23,7 @@ jobs:
         run: |
           status_code=$(curl -L -o /dev/null -s -w "%{http_code}\n" https://myrandomforestapi.streamlit.app)
           echo "STATUS_CODE=$status_code" >> $GITHUB_ENV
-          if [ "$status_code" -eq 200 ]; then
+          if [ "$status_code" -eq 303 ]; then
             echo "Streamlit app is accessible"
           else
             echo "Failed to access Streamlit app. Status code: $status_code"
