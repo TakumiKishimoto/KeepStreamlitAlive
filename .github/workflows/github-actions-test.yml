@@ -1,23 +1,54 @@
-name: GitHub Actions Test
+name: Keep Streamlit Alive and Trigger API
 
 on:
   schedule:
-    - cron: "* 0 * * *"
+    - cron: '0 * * * *'  # 毎時実行
   workflow_dispatch:
 
 jobs:
-  test:
+  keep_alive_and_trigger_api:
     runs-on: ubuntu-latest
 
     steps:
       - name: Checkout
         uses: actions/checkout@v3
 
-      - name: Commit
+      # Streamlitアプリにアクセスし、スリープを防ぐ
+      - name: Keep Streamlit Alive
+        run: curl https://myrandomforestapi.streamlit.app
+
+      # Streamlitアプリのステータスを確認する
+      - name: Check Streamlit Status
+        id: check_status
+        run: |
+          status_code=$(curl -o /dev/null -s -w "%{http_code}\n" https://myrandomforestapi.streamlit.app)
+          echo "STATUS_CODE=$status_code" >> $GITHUB_ENV
+          if [ "$status_code" -eq 200 ]; then
+            echo "Streamlit app is accessible"
+          else
+            echo "Failed to access Streamlit app. Status code: $status_code"
+            exit 1
+          fi
+
+      # APIにPOSTリクエストを送り、推論を実行し、返り値を直接READMEに追加
+      - name: Trigger API Prediction and Append to README
+        run: |
+          response=$(curl -X POST https://myrandomforestapi.streamlit.app/predict/ \
+          -H "Content-Type: application/json" \
+          -d '{
+            "sepal_length": 5.1,
+            "sepal_width": 3.5,
+            "petal_length": 1.4,
+            "petal_width": 2.0
+          }')
+          echo -e "\n### Prediction Response on $(date)\n$response" >> README.md
+          echo -e "\n### Streamlit Status Code on $(date)\nSTATUS_CODE=$STATUS_CODE" >> README.md
+
+      # READMEをコミット
+      - name: Commit API Response to README
         run: |
           git config --global user.email "${{ secrets.USER_EMAIL }}"
           git config --global user.name "${{ secrets.USER_NAME }}"
-          echo -e "\n$(date)" >> README.md
           git add README.md
-          git commit -m 'add time'
+          git commit -m 'add API prediction response and status code'
           git push origin main
