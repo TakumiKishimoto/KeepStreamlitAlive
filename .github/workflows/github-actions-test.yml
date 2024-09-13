@@ -21,7 +21,7 @@ jobs:
       - name: Check Streamlit Status
         id: check_status
         run: |
-          status_code=$(curl -o /dev/null -s -w "%{http_code}\n" https://myrandomforestapi.streamlit.app)
+          status_code=$(curl -L -o /dev/null -s -w "%{http_code}\n" https://myrandomforestapi.streamlit.app)
           echo "STATUS_CODE=$status_code" >> $GITHUB_ENV
           if [ "$status_code" -eq 200 ]; then
             echo "Streamlit app is accessible"
