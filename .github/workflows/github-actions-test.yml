@@ -16,7 +16,7 @@ jobs:
       # APIにPOSTリクエストを送り、推論を実行し、返り値を直接READMEに追加
       - name: Trigger API Prediction and Append to README
         run: |
-          response=$(curl --connect-timeout 300 -X POST https://myrandomforestapi.streamlit.app/predict/ \
+          response=$(curl --max-time 300 -X POST https://myrandomforestapi.streamlit.app/predict/ \
           -H "Content-Type: application/json" \
           -d '{
             "sepal_length": 5.1,
