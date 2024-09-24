@@ -2,7 +2,7 @@ name: Keep Streamlit Alive and Trigger API
 
 on:
   schedule:
-    - cron: '0 */3 * * *'  # 3時間おきに実行
+    - cron: '0 0 * * *'  # 24時間おきに実行
   workflow_dispatch:
 
 jobs:
